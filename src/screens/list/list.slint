@@ -1,0 +1,87 @@
+import { HeaderScreen, HeaderScreenModel, Colors, Navigator, ScreenId } from "../../../ui/controls.slint";
+
+export struct ListItemModel {
+    label: string,
+    count: int,
+}
+
+export struct ListModel {
+    header: HeaderScreenModel,
+    items: [ListItemModel],
+}
+
+export global ListInterface {
+    in-out property <bool> tick: false;
+    in-out property <int> selected-index: 0;
+    pure callback get-model() -> ListModel;
+}
+
+component ListItem inherits Rectangle {
+    in property <string> label;
+    in property <int> count;
+    callback clicked;
+
+    height: 56px;
+    background: Colors.white;
+
+    TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    HorizontalLayout {
+        padding-left: 24px;
+        padding-right: 24px;
+
+        Text {
+            text: label;
+            font-size: 18px;
+            color: #333333;
+            vertical-alignment: center;
+        }
+
+        Rectangle { horizontal-stretch: 1; }
+
+        Text {
+            text: count;
+            font-size: 18px;
+            color: #666666;
+            vertical-alignment: center;
+        }
+
+        Text {
+            text: "›";
+            font-size: 24px;
+            color: #999999;
+            vertical-alignment: center;
+        }
+    }
+
+    // Bottom border
+    Rectangle {
+        y: parent.height - 1px;
+        height: 1px;
+        background: #e0e0e0;
+    }
+}
+
+export component ListView inherits HeaderScreen {
+    property <ListModel> model: ListInterface.tick ? ListInterface.get-model() : ListInterface.get-model();
+    title: model.header.title;
+
+    back-clicked => { Navigator.back(); }
+
+    VerticalLayout {
+        padding-top: 16px;
+
+        for item[index] in model.items: ListItem {
+            label: item.label;
+            count: item.count;
+            clicked => {
+                ListInterface.selected-index = index;
+                Navigator.navigate(ScreenId.detail);
+            }
+        }
+
+        Rectangle { vertical-stretch: 1; }
+    }
+}

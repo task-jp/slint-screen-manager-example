@@ -1,0 +1,89 @@
+// Screen identifiers
+export enum ScreenId {
+    home,
+    settings,
+    list,
+    detail,
+}
+
+// Navigation state — managed by Router
+export global NavigationState {
+    in-out property <ScreenId> current-screen: ScreenId.home;
+    in-out property <bool> can-go-back: false;
+}
+
+// View → Router navigation
+export global Navigator {
+    callback navigate(ScreenId);
+    callback back();
+}
+
+// Base model struct for screens with header
+export struct HeaderScreenModel {
+    title: string,
+}
+
+// Color palette
+export global Colors {
+    out property <color> primary-blue: #1a6b9c;
+    out property <color> white: #ffffff;
+    out property <color> button-blue: #2b8cc4;
+}
+
+// Header icon button
+component HeaderIconButton inherits Rectangle {
+    in property <bool> show: true;
+    callback clicked;
+
+    width: 48px;
+    height: 48px;
+
+    if show: TouchArea {
+        clicked => { root.clicked(); }
+    }
+
+    if show: Text {
+        text: "←";
+        color: Colors.white;
+        font-size: 28px;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+    }
+}
+
+// Template for screens with header bar
+export component HeaderScreen inherits Rectangle {
+    width: 480px;
+    height: 800px;
+    background: #ededed;
+
+    in property <string> title;
+
+    callback back-clicked();
+
+    VerticalLayout {
+        // Header bar
+        Rectangle {
+            height: 48px;
+            background: Colors.primary-blue;
+
+            HorizontalLayout {
+                padding-left: 16px;
+                padding-right: 16px;
+
+                if NavigationState.can-go-back: HeaderIconButton {
+                    clicked => { root.back-clicked(); }
+                }
+
+                Text {
+                    text: title;
+                    color: Colors.white;
+                    font-size: 24px;
+                    vertical-alignment: center;
+                }
+            }
+        }
+
+        @children
+    }
+}

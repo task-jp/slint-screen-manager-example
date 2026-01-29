@@ -1,0 +1,37 @@
+import {
+    ScreenId,
+    NavigationState,
+    Navigator,
+    HeaderScreenModel,
+} from "controls.slint";
+import { HomeModel, HomeInterface, HomeView } from "../src/screens/home/home.slint";
+import { SettingsModel, SettingsInterface, SettingsView } from "../src/screens/settings/settings.slint";
+import { ListItemModel, ListModel, ListInterface, ListView } from "../src/screens/list/list.slint";
+import { DetailModel, DetailInterface, DetailView } from "../src/screens/detail/detail.slint";
+
+export {
+    ScreenId,
+    NavigationState,
+    Navigator,
+    HeaderScreenModel,
+    HomeModel,
+    HomeInterface,
+    SettingsModel,
+    SettingsInterface,
+    ListItemModel,
+    ListModel,
+    ListInterface,
+    DetailModel,
+    DetailInterface,
+}
+
+export component App inherits Window {
+    title: "Screen Manager Example";
+    width: 480px;
+    height: 800px;
+
+    if NavigationState.current-screen == ScreenId.home: HomeView {}
+    if NavigationState.current-screen == ScreenId.settings: SettingsView {}
+    if NavigationState.current-screen == ScreenId.list: ListView {}
+    if NavigationState.current-screen == ScreenId.detail: DetailView {}
+}

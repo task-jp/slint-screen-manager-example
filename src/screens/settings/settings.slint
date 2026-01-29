@@ -1,0 +1,37 @@
+import { HeaderScreen, HeaderScreenModel, Navigator } from "../../../ui/controls.slint";
+
+export struct SettingsModel {
+    header: HeaderScreenModel,
+}
+
+export global SettingsInterface {
+    in-out property <bool> tick: false;
+    pure callback get-model() -> SettingsModel;
+}
+
+export component SettingsView inherits HeaderScreen {
+    property <SettingsModel> model: SettingsInterface.tick ? SettingsInterface.get-model() : SettingsInterface.get-model();
+    title: model.header.title;
+
+    back-clicked => { Navigator.back(); }
+
+    Rectangle {
+        VerticalLayout {
+            alignment: center;
+
+            Text {
+                text: "This is the Settings page.";
+                font-size: 20px;
+                color: #333333;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: "Title comes from the Presenter via Model.";
+                font-size: 16px;
+                color: #666666;
+                horizontal-alignment: center;
+            }
+        }
+    }
+}

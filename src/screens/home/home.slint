@@ -1,0 +1,55 @@
+import { Colors, Navigator, ScreenId } from "../../../ui/controls.slint";
+
+export struct HomeModel { }
+
+export global HomeInterface {
+    in-out property <bool> tick: false;
+    pure callback get-model() -> HomeModel;
+}
+
+component NavButton inherits Rectangle {
+    in property <string> label;
+    callback clicked;
+
+    background: Colors.button-blue;
+
+    TouchArea {
+        clicked => {
+            root.clicked();
+        }
+    }
+
+    Text {
+        text: label;
+        color: Colors.white;
+        font-size: 24px;
+        vertical-alignment: center;
+        horizontal-alignment: center;
+    }
+}
+
+export component HomeView inherits Rectangle {
+    width: 480px;
+    height: 800px;
+    background: #ededed;
+
+    VerticalLayout {
+        padding: 10px;
+        spacing: 10px;
+        NavButton {
+            vertical-stretch: 1;
+            label: "List";
+            clicked => {
+                Navigator.navigate(ScreenId.list);
+            }
+        }
+
+        NavButton {
+            vertical-stretch: 1;
+            label: "Settings";
+            clicked => {
+                Navigator.navigate(ScreenId.settings);
+            }
+        }
+    }
+}

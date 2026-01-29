@@ -1,0 +1,104 @@
+import { HeaderScreen, HeaderScreenModel, Colors, Navigator } from "../../../ui/controls.slint";
+
+export struct DetailModel {
+    header: HeaderScreenModel,
+    count: int,
+}
+
+export global DetailInterface {
+    in-out property <bool> tick: false;
+    pure callback get-model() -> DetailModel;
+    callback increment();
+    callback decrement();
+    callback reset();
+}
+
+export component DetailView inherits HeaderScreen {
+    property <DetailModel> model: DetailInterface.tick ? DetailInterface.get-model() : DetailInterface.get-model();
+    title: model.header.title;
+
+    back-clicked => { Navigator.back(); }
+
+    Rectangle {
+        VerticalLayout {
+            alignment: center;
+            spacing: 24px;
+
+            Text {
+                text: "Count: \{model.count}";
+                font-size: 48px;
+                color: #333333;
+                horizontal-alignment: center;
+            }
+
+            HorizontalLayout {
+                alignment: center;
+                spacing: 12px;
+
+                Rectangle {
+                    width: 100px;
+                    height: 56px;
+                    background: ta-dec.pressed ? #1a6b9c : Colors.button-blue;
+                    border-radius: 8px;
+
+                    ta-dec := TouchArea {
+                        clicked => { DetailInterface.decrement(); }
+
+                        Text {
+                            text: "−";
+                            color: Colors.white;
+                            font-size: 28px;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+                    }
+                }
+
+                Rectangle {
+                    width: 100px;
+                    height: 56px;
+                    background: ta-reset.pressed ? #1a6b9c : Colors.button-blue;
+                    border-radius: 8px;
+
+                    ta-reset := TouchArea {
+                        clicked => { DetailInterface.reset(); }
+
+                        Text {
+                            text: "0";
+                            color: Colors.white;
+                            font-size: 20px;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+                    }
+                }
+
+                Rectangle {
+                    width: 100px;
+                    height: 56px;
+                    background: ta-inc.pressed ? #1a6b9c : Colors.button-blue;
+                    border-radius: 8px;
+
+                    ta-inc := TouchArea {
+                        clicked => { DetailInterface.increment(); }
+
+                        Text {
+                            text: "+";
+                            color: Colors.white;
+                            font-size: 28px;
+                            vertical-alignment: center;
+                            horizontal-alignment: center;
+                        }
+                    }
+                }
+            }
+
+            Text {
+                text: "Count is stored in the list.";
+                font-size: 14px;
+                color: #999999;
+                horizontal-alignment: center;
+            }
+        }
+    }
+}
